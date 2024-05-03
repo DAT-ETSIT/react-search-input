@@ -39,7 +39,7 @@ export function getValuesForKey (key, item) {
   return results.filter(r => typeof r === 'string' || typeof r === 'number')
 }
 
-export function searchStrings (strings, term, {caseSensitive, fuzzy, sortResults, exactMatch} = {}) {
+export function searchStrings (strings, term, {caseSensitive, accentSensitive, fuzzy, sortResults, exactMatch} = {}) {
   strings = strings.map(e => e.toString())
 
   try {
@@ -57,6 +57,9 @@ export function searchStrings (strings, term, {caseSensitive, fuzzy, sortResults
       try {
         if (!caseSensitive) {
           value = value.toLowerCase()
+        }
+        if (accentSensitive) {
+          value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         }
         if (exactMatch) {
           term = new RegExp('^' + term + '$', 'i')
